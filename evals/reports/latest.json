@@ -1,0 +1,521 @@
+[
+  {
+    "id": "dag-parallel-roots",
+    "title": "Comparison request becomes a DAG with parallel research roots",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=succeeded, wanted ['succeeded']"
+      },
+      {
+        "type": "min_tasks",
+        "passed": true,
+        "detail": "4 tasks (min 4)"
+      },
+      {
+        "type": "parallel_roots",
+        "passed": true,
+        "detail": "2 root tasks (min 2)"
+      },
+      {
+        "type": "task_ids_contain",
+        "passed": true,
+        "detail": "ids=research_rust research_go compare recommend"
+      }
+    ],
+    "seconds": 1.1
+  },
+  {
+    "id": "data-flow",
+    "title": "Every dependent task receives its upstream outputs (v1 bug)",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "data_flow",
+        "passed": true,
+        "detail": "all dependents received upstream outputs"
+      },
+      {
+        "type": "node_output",
+        "passed": true,
+        "detail": "compare output='[simulated] Compare Rust and Go against the research results\\nBuilds on: <- research_rust, <- research_go\\nUpstream signal: research_rust: \"[simulated] Research Rust: strengths, weaknesses and fit for a CLI to\u00e2\u20ac\u00a6\" | research_go: \"[simulated] Research Go: strengths, weaknesses and fit for a CLI tool\"\\nNote: deterministic placeholder text; no language model was called.'"
+      },
+      {
+        "type": "node_output",
+        "passed": true,
+        "detail": "compare output='[simulated] Compare Rust and Go against the research results\\nBuilds on: <- research_rust, <- research_go\\nUpstream signal: research_rust: \"[simulated] Research Rust: strengths, weaknesses and fit for a CLI to\u00e2\u20ac\u00a6\" | research_go: \"[simulated] Research Go: strengths, weaknesses and fit for a CLI tool\"\\nNote: deterministic placeholder text; no language model was called.'"
+      }
+    ],
+    "seconds": 0.58
+  },
+  {
+    "id": "critic-reviews-every-llm-node",
+    "title": "Critic reviews 100% of LLM nodes, including the last (v1 bug)",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "critic_coverage",
+        "passed": true,
+        "detail": "100% of completed LLM nodes reviewed (min 100%)"
+      },
+      {
+        "type": "metric",
+        "passed": true,
+        "detail": "critic_reviews=4 ({'eq': 4})"
+      }
+    ],
+    "seconds": 0.61
+  },
+  {
+    "id": "critic-gates-release",
+    "title": "No task starts before its dependencies are completed and reviewed",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "no_unreviewed_dependents",
+        "passed": true,
+        "detail": "ordering respected"
+      }
+    ],
+    "seconds": 0.8
+  },
+  {
+    "id": "no-demo-topic-leak",
+    "title": "Unrelated request never mentions the old hard-coded Python/Rust demo (v1 bug)",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=succeeded, wanted ['succeeded']"
+      },
+      {
+        "type": "answer_not_contains",
+        "passed": true,
+        "detail": "none present"
+      }
+    ],
+    "seconds": 0.6
+  },
+  {
+    "id": "vs-syntax",
+    "title": "'A vs B' phrasing is understood",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "task_ids_contain",
+        "passed": true,
+        "detail": "ids=research_python research_rust compare recommend"
+      },
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=succeeded, wanted ['succeeded']"
+      }
+    ],
+    "seconds": 0.65
+  },
+  {
+    "id": "calculator-tool",
+    "title": "Arithmetic is delegated to the deterministic tool and surfaced",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "node_output",
+        "passed": true,
+        "detail": "calculate output='84'"
+      },
+      {
+        "type": "answer_contains",
+        "passed": true,
+        "detail": "all present"
+      },
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=succeeded, wanted ['succeeded']"
+      }
+    ],
+    "seconds": 0.59
+  },
+  {
+    "id": "calculator-dos-contained",
+    "title": "9**9**9 fails fast with a clear error instead of hanging (v1 bug)",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "node_status",
+        "passed": true,
+        "detail": "calculate=failed, wanted failed"
+      },
+      {
+        "type": "error_contains",
+        "passed": true,
+        "detail": "error text: \"exponent too large (|exponent| must be <= 1024) exponent too large (|exponent| must be <= 1024) skipped: upstream 'calcu\""
+      },
+      {
+        "type": "node_status",
+        "passed": true,
+        "detail": "explain_result=skipped, wanted skipped"
+      },
+      {
+        "type": "elapsed_lte",
+        "passed": true,
+        "detail": "2 ms (max 3000)"
+      },
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=failed, wanted ['failed']"
+      }
+    ],
+    "seconds": 0.61
+  },
+  {
+    "id": "transient-retry",
+    "title": "Injected 503s are retried with backoff and the run still succeeds",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=succeeded, wanted ['succeeded']"
+      },
+      {
+        "type": "metric",
+        "passed": true,
+        "detail": "retries=8 ({'gte': 4})"
+      },
+      {
+        "type": "event_count",
+        "passed": true,
+        "detail": "8 'attempt_failed' events (min 4)"
+      }
+    ],
+    "seconds": 0.7
+  },
+  {
+    "id": "critic-repair",
+    "title": "Deliberately poor drafts are caught by the critic and repaired",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=succeeded, wanted ['succeeded']"
+      },
+      {
+        "type": "metric",
+        "passed": true,
+        "detail": "repairs=4 ({'gte': 4})"
+      },
+      {
+        "type": "event_count",
+        "passed": true,
+        "detail": "4 'repair_requested' events (min 4)"
+      },
+      {
+        "type": "critic_coverage",
+        "passed": true,
+        "detail": "100% of completed LLM nodes reviewed (min 100%)"
+      }
+    ],
+    "seconds": 0.65
+  },
+  {
+    "id": "permanent-failure-partial",
+    "title": "A permanently failing task yields an honest partial result and skips dependents",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=partial, wanted ['partial']"
+      },
+      {
+        "type": "node_status",
+        "passed": true,
+        "detail": "research_rust=completed, wanted completed"
+      },
+      {
+        "type": "node_status",
+        "passed": true,
+        "detail": "research_go=failed, wanted failed"
+      },
+      {
+        "type": "node_status",
+        "passed": true,
+        "detail": "compare=skipped, wanted skipped"
+      },
+      {
+        "type": "node_status",
+        "passed": true,
+        "detail": "recommend=skipped, wanted skipped"
+      },
+      {
+        "type": "answer_contains",
+        "passed": true,
+        "detail": "all present"
+      }
+    ],
+    "seconds": 0.61
+  },
+  {
+    "id": "reject-cycle",
+    "title": "A cyclic plan is rejected before any work starts (v1 bug)",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=failed, wanted ['failed']"
+      },
+      {
+        "type": "error_contains",
+        "passed": true,
+        "detail": "error text: 'plan rejected: dependency cycle detected among or downstream of: a, b, c'"
+      },
+      {
+        "type": "metric",
+        "passed": true,
+        "detail": "llm_calls=0 ({'eq': 0})"
+      }
+    ],
+    "seconds": 0.59
+  },
+  {
+    "id": "reject-dangling-dep",
+    "title": "Unknown dependencies are an error, not silently dropped",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=failed, wanted ['failed']"
+      },
+      {
+        "type": "error_contains",
+        "passed": true,
+        "detail": "error text: \"plan rejected: task 'a' depends on unknown task 'ghost' (known: a)\""
+      }
+    ],
+    "seconds": 0.63
+  },
+  {
+    "id": "reject-invented-tool",
+    "title": "A plan that invents a tool is rejected",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=failed, wanted ['failed']"
+      },
+      {
+        "type": "error_contains",
+        "passed": true,
+        "detail": "error text: \"plan rejected: task 'a' uses unknown tool 'rm_rf' (available: calculator, text_stats)\""
+      }
+    ],
+    "seconds": 0.63
+  },
+  {
+    "id": "reject-oversized-plan",
+    "title": "A 13-task plan exceeds the limit and is rejected",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=failed, wanted ['failed']"
+      },
+      {
+        "type": "error_contains",
+        "passed": true,
+        "detail": "error text: 'plan rejected: plan has 13 tasks; the limit is 12'"
+      }
+    ],
+    "seconds": 0.63
+  },
+  {
+    "id": "budget-hard-cap",
+    "title": "--max-llm-calls is a hard cap and exhaustion is reported",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "metric",
+        "passed": true,
+        "detail": "llm_calls=3 ({'lte': 3})"
+      },
+      {
+        "type": "event_count",
+        "passed": true,
+        "detail": "1 'budget_exhausted' events (min 1)"
+      },
+      {
+        "type": "status",
+        "passed": true,
+        "detail": "status=partial, wanted ['partial', 'failed']"
+      }
+    ],
+    "seconds": 0.65
+  },
+  {
+    "id": "real-parallelism",
+    "title": "Independent tasks overlap in time (parallelism > 1.2x)",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "metric",
+        "passed": true,
+        "detail": "parallelism=1.29 ({'gte': 1.2})"
+      }
+    ],
+    "seconds": 3.06
+  },
+  {
+    "id": "deterministic",
+    "title": "Same seed => identical plan, answer and metrics",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "deterministic",
+        "passed": true,
+        "detail": "runs identical"
+      }
+    ],
+    "seconds": 2.46
+  },
+  {
+    "id": "memory-recall",
+    "title": "A similar earlier request is recalled and fed to the planner",
+    "suite": "core",
+    "passed": true,
+    "checks": [
+      {
+        "type": "memory_recalled",
+        "passed": true,
+        "detail": "recalled 1 past run(s)"
+      }
+    ],
+    "seconds": 2.05
+  },
+  {
+    "id": "api-health",
+    "title": "Server reports provider, tools and limits",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "{'limits': {'max_llm_calls': 60, 'max_repairs': 2, 'max_tasks': 12, 'max_workers': 4, 'retries': 2},"
+      }
+    ],
+    "seconds": 0.0
+  },
+  {
+    "id": "api-empty-400",
+    "title": "Empty request is rejected with 400",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "HTTP 400"
+      }
+    ],
+    "seconds": 0.0
+  },
+  {
+    "id": "api-badjson-400",
+    "title": "Malformed JSON is rejected with 400",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "HTTP 400"
+      }
+    ],
+    "seconds": 0.0
+  },
+  {
+    "id": "api-oversize-413",
+    "title": "Oversized body is rejected with 413",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "HTTP 413"
+      }
+    ],
+    "seconds": 0.0
+  },
+  {
+    "id": "api-404",
+    "title": "Unknown run id returns 404",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "404"
+      }
+    ],
+    "seconds": 0.0
+  },
+  {
+    "id": "api-full-run",
+    "title": "Full run over HTTP: ordered, dense events ending in run_finished",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "22 events, dense seq, ends with run_finished"
+      }
+    ],
+    "seconds": 0.07
+  },
+  {
+    "id": "api-root",
+    "title": "Root endpoint points users to the terminal CLI",
+    "suite": "api",
+    "passed": true,
+    "checks": [
+      {
+        "type": "api",
+        "passed": true,
+        "detail": "GET / returns terminal guidance"
+      }
+    ],
+    "seconds": 0.01
+  }
+]

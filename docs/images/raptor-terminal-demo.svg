@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="430" viewBox="0 0 1040 430" role="img" aria-labelledby="title description">
+  <title id="title">Sample rapTOR terminal run</title>
+  <desc id="description">An illustrative deterministic simulator run plans four tasks, reviews results, and completes successfully.</desc>
+  <defs>
+    <style>
+      text { font-family: Consolas, Menlo, monospace; font-size: 14px; fill: #d7e2f1; }
+      .dim { fill: #899bb4; }
+      .green { fill: #65d69a; }
+      .cyan { fill: #73c9e8; }
+      .white { fill: #ffffff; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1040" height="430" rx="16" fill="#0b1020"/>
+  <path d="M0 16Q0 0 16 0H1024Q1040 0 1040 16V52H0Z" fill="#151f31"/>
+  <circle cx="25" cy="26" r="6" fill="#ff6b6b"/>
+  <circle cx="47" cy="26" r="6" fill="#ffd166"/>
+  <circle cx="69" cy="26" r="6" fill="#65d69a"/>
+  <text x="94" y="31" class="dim">rapTOR - deterministic simulator example</text>
+
+  <text x="34" y="91"><tspan class="green">$</tspan> raptor run "Compare Rust and Go for a CLI tool" --sim</text>
+  <text x="34" y="133" class="dim">0.00s  engine       run started on simulator</text>
+  <text x="34" y="160"><tspan class="cyan">0.25s</tspan>  planner      plan accepted: 4 tasks</text>
+  <text x="34" y="187"><tspan class="cyan">0.25s</tspan>  worker-1     research_rust started</text>
+  <text x="34" y="214"><tspan class="cyan">0.25s</tspan>  worker-2     research_go started</text>
+  <text x="34" y="241"><tspan class="green">0.69s</tspan>  critic       research_rust scored 9/10 - accepted</text>
+  <text x="34" y="268"><tspan class="green">0.76s</tspan>  critic       research_go scored 9/10 - accepted</text>
+  <text x="34" y="295"><tspan class="green">1.17s</tspan>  critic       compare scored 9/10 - accepted</text>
+  <text x="34" y="322"><tspan class="green">2.02s</tspan>  engine       run finished: succeeded</text>
+
+  <rect x="34" y="347" width="972" height="48" rx="8" fill="#12271f" stroke="#2d7955"/>
+  <text x="54" y="377" class="green">4/4 tasks complete</text>
+  <text x="264" y="377" class="white">10 calls</text>
+  <text x="392" y="377" class="white">4 critic reviews</text>
+  <text x="590" y="377" class="dim">Illustrative simulator output; timing varies.</text>
+</svg>

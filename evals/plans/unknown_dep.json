@@ -1,0 +1,12 @@
+{
+  "goal": "adversarial: dangling dependency",
+  "tasks": [
+    {
+      "id": "a",
+      "description": "first",
+      "dependencies": [
+        "ghost"
+      ]
+    }
+  ]
+}

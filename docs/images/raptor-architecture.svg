@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="340" viewBox="0 0 1160 340" role="img" aria-labelledby="title description">
+  <title id="title">rapTOR orchestration flow</title>
+  <desc id="description">A request is planned and validated, dispatched to parallel workers, reviewed by a critic, and synthesized into an answer.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#8da2c0"/>
+    </marker>
+    <style>
+      text { font-family: Segoe UI, Arial, sans-serif; fill: #e7edf7; }
+      .muted { fill: #9aabc4; }
+      .label { font-size: 15px; font-weight: 700; }
+      .detail { font-size: 12px; }
+      .edge { stroke: #8da2c0; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1160" height="340" rx="18" fill="#0b1220"/>
+  <text x="34" y="46" font-size="21" font-weight="700">rapTOR run lifecycle</text>
+  <text x="34" y="69" class="detail muted">Bounded, observable orchestration with local inference</text>
+
+  <g>
+    <rect x="30" y="112" width="190" height="112" rx="12" fill="#18243a" stroke="#4779bd"/>
+    <text x="50" y="148" class="label">Request + plan</text>
+    <text x="50" y="174" class="detail muted">Build a dependency DAG</text>
+    <text x="50" y="194" class="detail muted">from the user's question</text>
+
+    <rect x="260" y="112" width="190" height="112" rx="12" fill="#18243a" stroke="#4779bd"/>
+    <text x="280" y="148" class="label">Validate</text>
+    <text x="280" y="174" class="detail muted">Reject cycles, unknown</text>
+    <text x="280" y="194" class="detail muted">deps, tools, and limits</text>
+
+    <rect x="490" y="112" width="190" height="112" rx="12" fill="#18243a" stroke="#4779bd"/>
+    <text x="510" y="148" class="label">Schedule</text>
+    <text x="510" y="174" class="detail muted">Run ready tasks in</text>
+    <text x="510" y="194" class="detail muted">parallel workers</text>
+
+    <rect x="720" y="112" width="190" height="112" rx="12" fill="#18243a" stroke="#9c7ae6"/>
+    <text x="740" y="148" class="label">Critic gate</text>
+    <text x="740" y="174" class="detail muted">Review and repair before</text>
+    <text x="740" y="194" class="detail muted">releasing dependents</text>
+
+    <rect x="950" y="112" width="180" height="112" rx="12" fill="#18243a" stroke="#47b88a"/>
+    <text x="970" y="148" class="label">Synthesize</text>
+    <text x="970" y="174" class="detail muted">Return answer with</text>
+    <text x="970" y="194" class="detail muted">status and metrics</text>
+  </g>
+
+  <path class="edge" d="M220 168H252"/>
+  <path class="edge" d="M450 168H482"/>
+  <path class="edge" d="M680 168H712"/>
+  <path class="edge" d="M910 168H942"/>
+  <path d="M815 230V270H585V232" fill="none" stroke="#9c7ae6" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arrow)"/>
+  <text x="620" y="296" class="detail muted">critic feedback repairs a weak task before release</text>
+  <text x="34" y="320" class="detail muted">Provider: local Ollama or deterministic simulator · no cloud inference</text>
+</svg>

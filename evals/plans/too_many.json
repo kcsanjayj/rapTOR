@@ -1,0 +1,57 @@
+{
+  "goal": "adversarial: 13 tasks",
+  "tasks": [
+    {
+      "id": "t0",
+      "description": "x"
+    },
+    {
+      "id": "t1",
+      "description": "x"
+    },
+    {
+      "id": "t2",
+      "description": "x"
+    },
+    {
+      "id": "t3",
+      "description": "x"
+    },
+    {
+      "id": "t4",
+      "description": "x"
+    },
+    {
+      "id": "t5",
+      "description": "x"
+    },
+    {
+      "id": "t6",
+      "description": "x"
+    },
+    {
+      "id": "t7",
+      "description": "x"
+    },
+    {
+      "id": "t8",
+      "description": "x"
+    },
+    {
+      "id": "t9",
+      "description": "x"
+    },
+    {
+      "id": "t10",
+      "description": "x"
+    },
+    {
+      "id": "t11",
+      "description": "x"
+    },
+    {
+      "id": "t12",
+      "description": "x"
+    }
+  ]
+}

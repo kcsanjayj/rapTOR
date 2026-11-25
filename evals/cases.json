@@ -1,0 +1,468 @@
+[
+  {
+    "id": "dag-parallel-roots",
+    "title": "Comparison request becomes a DAG with parallel research roots",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "succeeded"
+      },
+      {
+        "type": "min_tasks",
+        "n": 4
+      },
+      {
+        "type": "parallel_roots",
+        "min": 2
+      },
+      {
+        "type": "task_ids_contain",
+        "all": [
+          "research_rust",
+          "research_go",
+          "compare",
+          "recommend"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "data-flow",
+    "title": "Every dependent task receives its upstream outputs (v1 bug)",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [],
+    "expect": [
+      {
+        "type": "data_flow"
+      },
+      {
+        "type": "node_output",
+        "id": "compare",
+        "contains": "research_rust"
+      },
+      {
+        "type": "node_output",
+        "id": "compare",
+        "contains": "research_go"
+      }
+    ]
+  },
+  {
+    "id": "critic-reviews-every-llm-node",
+    "title": "Critic reviews 100% of LLM nodes, including the last (v1 bug)",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [],
+    "expect": [
+      {
+        "type": "critic_coverage",
+        "min": 1.0
+      },
+      {
+        "type": "metric",
+        "name": "critic_reviews",
+        "eq": 4
+      }
+    ]
+  },
+  {
+    "id": "critic-gates-release",
+    "title": "No task starts before its dependencies are completed and reviewed",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--latency-ms",
+      "15"
+    ],
+    "expect": [
+      {
+        "type": "no_unreviewed_dependents"
+      }
+    ]
+  },
+  {
+    "id": "no-demo-topic-leak",
+    "title": "Unrelated request never mentions the old hard-coded Python/Rust demo (v1 bug)",
+    "request": "Plan a 3-day trip to Rome",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "succeeded"
+      },
+      {
+        "type": "answer_not_contains",
+        "any": [
+          "python",
+          "rust"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vs-syntax",
+    "title": "'A vs B' phrasing is understood",
+    "request": "Python vs Rust for web APIs?",
+    "args": [],
+    "expect": [
+      {
+        "type": "task_ids_contain",
+        "all": [
+          "research_python",
+          "research_rust"
+        ]
+      },
+      {
+        "type": "status",
+        "is": "succeeded"
+      }
+    ]
+  },
+  {
+    "id": "calculator-tool",
+    "title": "Arithmetic is delegated to the deterministic tool and surfaced",
+    "request": "Calculate 12*(3+4)",
+    "args": [],
+    "expect": [
+      {
+        "type": "node_output",
+        "id": "calculate",
+        "contains": "84"
+      },
+      {
+        "type": "answer_contains",
+        "all": [
+          "84"
+        ]
+      },
+      {
+        "type": "status",
+        "is": "succeeded"
+      }
+    ]
+  },
+  {
+    "id": "calculator-dos-contained",
+    "title": "9**9**9 fails fast with a clear error instead of hanging (v1 bug)",
+    "request": "Calculate 9**9**9",
+    "args": [],
+    "expect": [
+      {
+        "type": "node_status",
+        "id": "calculate",
+        "is": "failed"
+      },
+      {
+        "type": "error_contains",
+        "text": "exponent"
+      },
+      {
+        "type": "node_status",
+        "id": "explain_result",
+        "is": "skipped"
+      },
+      {
+        "type": "elapsed_lte",
+        "ms": 3000
+      },
+      {
+        "type": "status",
+        "is": "failed"
+      }
+    ]
+  },
+  {
+    "id": "transient-retry",
+    "title": "Injected 503s are retried with backoff and the run still succeeds",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--chaos-transient",
+      "1.0",
+      "--seed",
+      "3"
+    ],
+    "expect": [
+      {
+        "type": "status",
+        "is": "succeeded"
+      },
+      {
+        "type": "metric",
+        "name": "retries",
+        "gte": 4
+      },
+      {
+        "type": "event_count",
+        "kind": "attempt_failed",
+        "gte": 4
+      }
+    ]
+  },
+  {
+    "id": "critic-repair",
+    "title": "Deliberately poor drafts are caught by the critic and repaired",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--chaos-degrade",
+      "1.0",
+      "--seed",
+      "3"
+    ],
+    "expect": [
+      {
+        "type": "status",
+        "is": "succeeded"
+      },
+      {
+        "type": "metric",
+        "name": "repairs",
+        "gte": 4
+      },
+      {
+        "type": "event_count",
+        "kind": "repair_requested",
+        "gte": 4
+      },
+      {
+        "type": "critic_coverage",
+        "min": 1.0
+      }
+    ]
+  },
+  {
+    "id": "permanent-failure-partial",
+    "title": "A permanently failing task yields an honest partial result and skips dependents",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--chaos-fail",
+      "research_go"
+    ],
+    "expect": [
+      {
+        "type": "status",
+        "is": "partial"
+      },
+      {
+        "type": "node_status",
+        "id": "research_rust",
+        "is": "completed"
+      },
+      {
+        "type": "node_status",
+        "id": "research_go",
+        "is": "failed"
+      },
+      {
+        "type": "node_status",
+        "id": "compare",
+        "is": "skipped"
+      },
+      {
+        "type": "node_status",
+        "id": "recommend",
+        "is": "skipped"
+      },
+      {
+        "type": "answer_contains",
+        "all": [
+          "Incomplete tasks"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "reject-cycle",
+    "title": "A cyclic plan is rejected before any work starts (v1 bug)",
+    "request": "x",
+    "plan_file": "cycle.json",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "failed"
+      },
+      {
+        "type": "error_contains",
+        "text": "cycle"
+      },
+      {
+        "type": "metric",
+        "name": "llm_calls",
+        "eq": 0
+      }
+    ]
+  },
+  {
+    "id": "reject-dangling-dep",
+    "title": "Unknown dependencies are an error, not silently dropped",
+    "request": "x",
+    "plan_file": "unknown_dep.json",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "failed"
+      },
+      {
+        "type": "error_contains",
+        "text": "unknown task"
+      }
+    ]
+  },
+  {
+    "id": "reject-invented-tool",
+    "title": "A plan that invents a tool is rejected",
+    "request": "x",
+    "plan_file": "unknown_tool.json",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "failed"
+      },
+      {
+        "type": "error_contains",
+        "text": "unknown tool"
+      }
+    ]
+  },
+  {
+    "id": "reject-oversized-plan",
+    "title": "A 13-task plan exceeds the limit and is rejected",
+    "request": "x",
+    "plan_file": "too_many.json",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "failed"
+      },
+      {
+        "type": "error_contains",
+        "text": "limit"
+      }
+    ]
+  },
+  {
+    "id": "budget-hard-cap",
+    "title": "--max-llm-calls is a hard cap and exhaustion is reported",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--max-llm-calls",
+      "3"
+    ],
+    "expect": [
+      {
+        "type": "metric",
+        "name": "llm_calls",
+        "lte": 3
+      },
+      {
+        "type": "event_count",
+        "kind": "budget_exhausted",
+        "gte": 1
+      },
+      {
+        "type": "status",
+        "is": [
+          "partial",
+          "failed"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "real-parallelism",
+    "title": "Independent tasks overlap in time (parallelism > 1.2x)",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--latency-ms",
+      "150"
+    ],
+    "expect": [
+      {
+        "type": "metric",
+        "name": "parallelism",
+        "gte": 1.2
+      }
+    ]
+  },
+  {
+    "id": "deterministic",
+    "title": "Same seed => identical plan, answer and metrics",
+    "request": "Compare Rust and Go for a CLI tool",
+    "args": [
+      "--chaos-transient",
+      "0.5",
+      "--chaos-degrade",
+      "0.5",
+      "--seed",
+      "42"
+    ],
+    "repeat": 2,
+    "expect": [
+      {
+        "type": "deterministic"
+      }
+    ]
+  },
+  {
+    "id": "memory-recall",
+    "title": "A similar earlier request is recalled and fed to the planner",
+    "sequence": [
+      "Compare Rust and Go for a CLI tool",
+      "Compare Rust and Zig for a CLI tool"
+    ],
+    "request": "",
+    "args": [
+      "--memory"
+    ],
+    "expect": [
+      {
+        "type": "memory_recalled"
+      }
+    ]
+  },
+  {
+    "id": "live-sanity",
+    "title": "[live] real model answers a trivial question correctly",
+    "suite": "live",
+    "request": "What is 15 percent of 240? Answer with just the number.",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": [
+          "succeeded",
+          "partial"
+        ]
+      },
+      {
+        "type": "answer_contains",
+        "all": [
+          "36"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "live-compare",
+    "title": "[live] real model compares two options and mentions both",
+    "suite": "live",
+    "request": "Compare tea and coffee in two sentences",
+    "args": [],
+    "expect": [
+      {
+        "type": "status",
+        "is": "succeeded"
+      },
+      {
+        "type": "answer_contains",
+        "all": [
+          "tea",
+          "coffee"
+        ]
+      }
+    ]
+  }
+]

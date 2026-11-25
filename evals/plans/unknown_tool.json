@@ -1,0 +1,12 @@
+{
+  "goal": "adversarial: invented tool",
+  "tasks": [
+    {
+      "id": "a",
+      "description": "delete everything",
+      "kind": "tool",
+      "tool": "rm_rf",
+      "args": {}
+    }
+  ]
+}

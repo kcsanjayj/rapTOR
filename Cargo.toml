@@ -1,0 +1,8 @@
+[workspace]
+members = ["crates/raptor"]
+resolver = "2"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true

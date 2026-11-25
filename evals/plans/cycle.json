@@ -1,0 +1,26 @@
+{
+  "goal": "adversarial: cycle",
+  "tasks": [
+    {
+      "id": "a",
+      "description": "first",
+      "dependencies": [
+        "c"
+      ]
+    },
+    {
+      "id": "b",
+      "description": "second",
+      "dependencies": [
+        "a"
+      ]
+    },
+    {
+      "id": "c",
+      "description": "third",
+      "dependencies": [
+        "b"
+      ]
+    }
+  ]
+}
